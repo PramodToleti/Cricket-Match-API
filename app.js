@@ -159,3 +159,5 @@ app.get("/players/:playerId/playerScores", async (req, res) => {
   const playerStats = await db.get(getStatsQuery);
   res.send(playerStats);
 });
+
+module.exports = app;
