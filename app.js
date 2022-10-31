@@ -1,6 +1,7 @@
 const express = require("express");
 
 const app = express();
+app.use(express.json());
 
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
@@ -65,4 +66,21 @@ app.get("/players/:playerId/", async (req, res) => {
     };
   });
   res.send(...playerDetails);
+});
+
+//Update Player Details API
+app.put("/players/:playerId/", async (req, res) => {
+  const { playerId } = req.params;
+  const playerDetails = req.body;
+  const { playerName } = playerDetails;
+  const updatePlayerDetailsQuery = `
+        UPDATE 
+          player_details
+        SET 
+          player_name = '${playerName}'
+        WHERE 
+          player_id = ${playerId};
+    `;
+  const dbResponse = await db.run(updatePlayerDetailsQuery);
+  res.send("Player Details Updated");
 });
