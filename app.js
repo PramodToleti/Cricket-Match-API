@@ -84,3 +84,25 @@ app.put("/players/:playerId/", async (req, res) => {
   const dbResponse = await db.run(updatePlayerDetailsQuery);
   res.send("Player Details Updated");
 });
+
+//Get Match Details APi
+app.get("/matches/:matchId/", async (req, res) => {
+  const { matchId } = req.params;
+  const getMatchDetailsQuery = `
+        SELECT 
+          * 
+        FROM 
+          match_details
+        WHERE 
+          match_id = ${matchId};
+    `;
+  const dbResponse = await db.get(getMatchDetailsQuery);
+  const matchDetails = [dbResponse].map((obj) => {
+    return {
+      matchId: obj.match_id,
+      match: obj.match,
+      year: obj.year,
+    };
+  });
+  res.send(...matchDetails);
+});
