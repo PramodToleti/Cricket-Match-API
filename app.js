@@ -26,3 +26,22 @@ const initializeDBAndServer = async () => {
 };
 
 initializeDBAndServer();
+
+//Get All Players Details API
+app.get("/players/", async (req, res) => {
+  const getPlayersDetailsQuery = `
+        SELECT 
+          * 
+        FROM 
+          player_details;
+    `;
+
+  const dbResponse = await db.all(getPlayersDetailsQuery);
+  const playersDetails = dbResponse.map((obj) => {
+    return {
+      playerId: obj.player_id,
+      playerName: obj.player_name,
+    };
+  });
+  res.send(playersDetails);
+});
