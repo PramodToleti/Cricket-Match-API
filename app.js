@@ -106,3 +106,21 @@ app.get("/matches/:matchId/", async (req, res) => {
   });
   res.send(...matchDetails);
 });
+
+//Get Match Details of a Specific Player API
+app.get("/players/:playerId/matches", async (req, res) => {
+  const { playerId } = req.params;
+  const getPlayerMatchDetailsQuery = `
+        SELECT 
+          match_details.match_id AS matchId,
+          match_details.match AS match,
+          match_details.year AS year
+        FROM match_details
+            INNER JOIN player_match_score
+        ON match_details.match_id = player_match_score.match_id
+        WHERE 
+          player_match_score.player_id = ${playerId};
+    `;
+  const playerMatchDetails = await db.all(getPlayerMatchDetailsQuery);
+  res.send(playerMatchDetails);
+});
