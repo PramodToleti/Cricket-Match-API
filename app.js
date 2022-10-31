@@ -141,3 +141,21 @@ app.get("/matches/:matchId/players", async (req, res) => {
   const playersList = await db.all(getPlayersOfMatchQuery);
   res.send(playersList);
 });
+
+//Get Stats of a Specific Player
+app.get("/players/:playerId/playerScores", async (req, res) => {
+  const { playerId } = req.params;
+  const getStatsQuery = `
+        SELECT
+          SUM(player_match_score.score) AS totalScore,
+          SUM(player_match_score.fours) AS totalFours,
+          SUM(player_match_score.sixes) AS totalSixes
+        FROM player_details 
+            INNER JOIN player_match_score 
+        ON player_details.player_id = player_match_score.player_id
+        WHERE 
+          player_details.player_id = ${playerId};
+    `;
+  const playerStats = await db.get(getStatsQuery);
+  res.send(playerStats);
+});
