@@ -147,6 +147,8 @@ app.get("/players/:playerId/playerScores", async (req, res) => {
   const { playerId } = req.params;
   const getStatsQuery = `
         SELECT
+          player_details.player_id AS playerId,
+          player_details.player_name AS playerName,
           SUM(player_match_score.score) AS totalScore,
           SUM(player_match_score.fours) AS totalFours,
           SUM(player_match_score.sixes) AS totalSixes
