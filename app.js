@@ -45,3 +45,24 @@ app.get("/players/", async (req, res) => {
   });
   res.send(playersDetails);
 });
+
+//Get Specific Player API
+app.get("/players/:playerId/", async (req, res) => {
+  const { playerId } = req.params;
+  const getPlayerDetailsQuery = `
+        SELECT 
+          * 
+        FROM 
+          player_details
+        WHERE 
+          player_id = ${playerId};
+    `;
+  const dbResponse = await db.get(getPlayerDetailsQuery);
+  const playerDetails = [dbResponse].map((obj) => {
+    return {
+      playerId: obj.player_id,
+      playerName: obj.player_name,
+    };
+  });
+  res.send(...playerDetails);
+});
