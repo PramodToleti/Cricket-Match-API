@@ -124,3 +124,20 @@ app.get("/players/:playerId/matches", async (req, res) => {
   const playerMatchDetails = await db.all(getPlayerMatchDetailsQuery);
   res.send(playerMatchDetails);
 });
+
+//Get Players List of a Specific match API
+app.get("/matches/:matchId/players", async (req, res) => {
+  const { matchId } = req.params;
+  const getPlayersOfMatchQuery = `
+        SELECT 
+          player_details.player_id AS playerId,
+          player_details.player_name AS playerName
+        FROM player_details
+            INNER JOIN player_match_score
+        ON player_details.player_id = player_match_score.player_id
+        WHERE 
+          player_match_score.match_id = ${matchId};
+    `;
+  const playersList = await db.all(getPlayersOfMatchQuery);
+  res.send(playersList);
+});
